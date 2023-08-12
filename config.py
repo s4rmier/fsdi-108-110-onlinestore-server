@@ -1,3 +1,6 @@
+import pymongo
+import certifi
+
 me = {
     "name": "Romnick",
     "last_name": "Sarmiento",
@@ -13,3 +16,6 @@ me = {
 
 # database config
 con_str = "mongodb+srv://romnick:sdgkufsdi@cluster0.hl6bxb3.mongodb.net/?retryWrites=true&w=majority"
+
+client = pymongo.MongoClient(con_str, tlsCAFile=certifi.where())
+db = client.get_database("urbanbikesco")

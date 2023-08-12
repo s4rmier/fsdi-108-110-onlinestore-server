@@ -43,5 +43,12 @@ def categories():
     return json.dumps(all_cats)
 
 
+@app.get("/api/products")
+def get_products():
+    products = []
+
+    return json.dumps(products)
+
+
 # Start the server
 app.run(debug=True)
