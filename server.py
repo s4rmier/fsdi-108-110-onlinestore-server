@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from config import me, db
 import json
+from bson import ObjectId  # this is a part of the mongoDB objectID string
 
 app = Flask("server")
 
@@ -64,6 +65,19 @@ def get_products():
     return json.dumps(products)
 
 
+@app.get("/api/products/id/<id>")
+def get_product_id(id):
+    if not ObjectId.is_valid(id):
+        return abort(400, "Invalid ID")
+
+    db_id = ObjectId(id)
+    product = db.products.find_one({"_id": db_id})
+    if not product:
+        return abort(404, "ID not found")
+
+    return json.dumps(fix_id(product))
+
+
 @app.post("/api/products")
 def save_product():
     product = request.get_json()
@@ -96,6 +110,60 @@ def get_total():
     print(catalog_total)
 
     return json.dumps(f"The catalog total is: ${catalog_total}")
+
+
+# creeate POST and GET endpoints to support coupon codes
+@app.get("/api/coupons")
+def get_coupons():
+    results = []
+    cursor = db.coupons.find({})
+    for coupon in cursor:
+        results.append(fix_id(coupon))
+    return json.dumps(results)
+
+
+@app.post("/api/coupons")
+def save_coupon():
+    coupon = request.get_json()
+
+    # coupon validation/rules
+
+    # there must be a code
+    if not "code" in coupon:
+        return abort(400, "Code is required")
+
+    # there must be a discount
+    if not "discount" in coupon:
+        return abort(400, "Discount is required")
+
+    # the discount cannot be bigger than 35
+
+    db.coupons.insert_one(coupon)
+    return json.dumps(fix_id(coupon))
+
+
+@app.get("/api/coupons/code/<code>")
+def get_coupon_code(code):
+    coupon = db.coupons.find_one({"code": code})
+    if not coupon:
+        return abort(404, "Coupon not found")
+
+    return json.dumps(fix_id(coupon))
+
+# /api/coupons/id/<id>
+
+
+@app.get("/api/coupons/id/<id>")
+def get_coupon_id(id):
+    if not ObjectId.is_valid(id):
+        return abort(400, "Invalid ID")
+
+    db_id = ObjectId(id)
+    coupon = db.coupons.find_one({"_id": db_id})
+    if not coupon:
+        return abort(404, "ID not found")
+
+    return json.dumps(fix_id(coupon))
 
 
 # Start the server

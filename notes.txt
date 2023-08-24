@@ -18,3 +18,14 @@ deactivate
 
 python3 -m pip install flask
 python3 -m pip install pymongo "pymongo[srv]" certifi
+
+# displays packages installed in virtual environment and write it into requirements.txt
+python3 -m pip freeze > requirements.txt
+
+# install all requirements from requirements.txt
+python3 -m pip install -r requirements.txt or pip3 install -r requirements.txt 
+
+pip3 works on Mac
+
+# update requirements.txt
+python3 -m pip freeze > requirements.txt
