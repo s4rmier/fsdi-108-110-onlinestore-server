@@ -2,8 +2,10 @@ from flask import Flask, request, abort
 from config import me, db
 import json
 from bson import ObjectId  # this is a part of the mongoDB objectID string
+from flask_cors import CORS
 
 app = Flask("server")
+CORS(app)  # WARNING: This line will disable CORS
 
 
 @app.get("/")

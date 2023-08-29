@@ -29,3 +29,6 @@ pip3 works on Mac
 
 # update requirements.txt
 python3 -m pip freeze > requirements.txt
+
+#installing flask cors
+python3 -m -pip install flask-cors
