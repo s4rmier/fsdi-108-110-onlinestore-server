@@ -80,6 +80,19 @@ def get_product_id(id):
     return json.dumps(fix_id(product))
 
 
+@app.delete("/api/products/id/<id>")
+def del_product_id(id):
+    if not ObjectId.is_valid(id):
+        return abort(400, "Invalid ID")
+
+    db_id = ObjectId(id)
+    product = db.products.delete_one({"_id": db_id})
+    if not product:
+        return abort(404, "ID not found")
+
+    return json.dumps({"status": "Ok"})
+
+
 @app.post("/api/products")
 def save_product():
     product = request.get_json()
@@ -166,6 +179,19 @@ def get_coupon_id(id):
         return abort(404, "ID not found")
 
     return json.dumps(fix_id(coupon))
+
+
+@app.delete("/api/coupons/id/<id>")
+def del_coupon_id(id):
+    if not ObjectId.is_valid(id):
+        return abort(400, "Invalid ID")
+
+    db_id = ObjectId(id)
+    product = db.coupons.delete_one({"_id": db_id})
+    if not product:
+        return abort(404, "ID not found")
+
+    return json.dumps({"status": "Ok"})
 
 
 # Start the server
